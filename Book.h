@@ -11,7 +11,7 @@ private:
 	string author;
 	string copyrightDate;
 public:
-	Book(const string& name, const string& description, int id, const string& title, const string& author, const string& copyrightDate);
+	Book(const string& description, int id, const string& title, const string& author, const string& copyrightDate);
 
 	void print(ostream& os) const override;
 };

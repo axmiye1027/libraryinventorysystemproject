@@ -1,7 +1,7 @@
 #include "Movie.h"
 
-Movie::Movie(const string& name, const string& description, int id, const string& title, const string& director, const vector<string>& actors)
-	: Item(name, description, id), title(title), director(director), actors(actors) {
+Movie::Movie(const string& description, int id, const string& title, const string& director, const vector<string>& actors)
+	: Item(title, description, id), title(title), director(director), actors(actors) {
 }
 
 void Movie::addActor(const string& actor)
@@ -12,7 +12,6 @@ void Movie::addActor(const string& actor)
 void Movie::print(ostream& os) const
 {
     os << "=== Movie ===\n"
-        << "Name: " << name << "\n"
         << "Title: " << title << "\n"
         << "Director: " << director << "\n"
         << "ID: " << id << "\n"

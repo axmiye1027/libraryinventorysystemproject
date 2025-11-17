@@ -41,7 +41,7 @@ bool Item::checkout(const string& person, const string& due)
 {
 	if (checkedOut)
 	{
-		cout << "Error----- " << name << "is already checked out.\n";
+		cout << "Error: " << name << " is already checked out.\n";
 		return false;
 	}
 	checkedOut = true;
@@ -52,7 +52,7 @@ bool Item::checkout(const string& person, const string& due)
 bool Item::checkin()
 {
 	if (!checkedOut) {
-		cout << "Error--------" << name << " is not currently checked out.\n";
+		cout << "Error: " << name << " is not currently checked out.\n";
 		return false;
 	}
 	checkedOut = false;

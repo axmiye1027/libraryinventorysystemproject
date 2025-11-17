@@ -41,6 +41,20 @@ private:
 
 public:
 	/***********************************************************************
+	 * CONSTRUCTOR
+	 * ---------------------------------------------------------------------
+	 * Initializes an empty library inventory.
+	 **********************************************************************/
+	Library();
+
+	/***********************************************************************
+	 * DESTRUCTOR
+	 * ---------------------------------------------------------------------
+	 * Cleans up all dynamically allocated items in the inventory.
+	 **********************************************************************/
+	~Library();
+
+	/***********************************************************************
 	 * PUBLIC MEMBER FUNCTION []
 	 * ---------------------------------------------------------------------
 	 * Overloads the C++ [] operator. In the Library class, it allows access
@@ -52,9 +66,9 @@ public:
 	 * EXAMPLE (with overloading)
 	 * 		libraryInventory1[3][4];
 	 * ---------------------------------------------------------------------
-	 * => Returns a reference to an Item.
+	 * => Returns a reference to a vector of Item pointers.
 	 **********************************************************************/
-	Item& operator[](const int& index);
+	vector<Item*>& operator[](const int& index);
 
 	/***********************************************************************
 	 * PUBLIC MEMBER FUNCTION addItem
@@ -94,7 +108,7 @@ public:
 	 * ---------------------------------------------------------------------
 	 * => Returns nothing; outputs inventory.
 	 **********************************************************************/
-	void printInventory(Item& item);
+	void printInventory();
 	
 	/***********************************************************************
 	 * PUBLIC MEMBER FUNCTION printCheckOutedItems

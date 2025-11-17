@@ -1,13 +1,12 @@
-#include "book.h"
+#include "Book.h"
 
-Book::Book(const string& name, const string& description, int id, const string& title, const string& author, const string& copyrightDate)
-	:Item(name, description, id), title(title), author(author), copyrightDate(copyrightDate) {
+Book::Book(const string& description, int id, const string& title, const string& author, const string& copyrightDate)
+	:Item(title, description, id), title(title), author(author), copyrightDate(copyrightDate) {
 }
 
 void Book::print(ostream& os) const
 {
     os << "=== Book ===\n"
-        << "Name: " << name << "\n"
         << "Title: " << title << "\n"
         << "Author: " << author << "\n"
         << "Copyright: " << copyrightDate << "\n"
