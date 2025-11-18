@@ -11,7 +11,8 @@ private:
 	vector<string> actors;
 
 public:
-	Movie(const string& description, int id, const string& title, const string& director, const vector<string>& actors);
+	Movie(const string& description, int id, const string& title,
+		  const string& director, const vector<string>& actors);
 
 	void addActor(const string& actor);
 

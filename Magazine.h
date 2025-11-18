@@ -1,5 +1,3 @@
-
-
 #include "Item.h"
 
 #ifndef MAGAZINE_H

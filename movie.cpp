@@ -1,8 +1,8 @@
 #include "Movie.h"
 
-Movie::Movie(const string& description, int id, const string& title, const string& director, const vector<string>& actors)
-	: Item(title, description, id), title(title), director(director), actors(actors) {
-}
+Movie::Movie(const string& description, int id, const string& title,
+		     const string& director, const vector<string>& actors)
+  : Item(title, description, id), title(title), director(director), actors(actors) {}
 
 void Movie::addActor(const string& actor)
 {

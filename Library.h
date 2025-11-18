@@ -14,6 +14,8 @@
 #include <string>		/* string class			*/
 #include <vector>		/* vector STL	 		*/
 #include <sstream>		/* ostringstream 		*/
+#include <fstream>		/* ofstream				*/
+#include <stdexcept>    /* exceptions			*/
 #include "Item.h"		/* Item class       	*/
 #include "Book.h"		/* Book class       	*/
 #include "Movie.h"		/* Movie class      	*/
@@ -38,6 +40,7 @@ private:
 	 **********************************************************************/
 	vector<vector<Item*>> libraryInventory;
 
+	const int MAX_COMPARTMENTS = 15;
 
 public:
 	/***********************************************************************
@@ -48,11 +51,27 @@ public:
 	Library();
 
 	/***********************************************************************
+	 * CONSTRUCTOR
+	 * ---------------------------------------------------------------------
+	 * Initializes a library inventory with a number of shelves
+	 **********************************************************************/
+	Library(int numberOfShelves);
+
+	/***********************************************************************
 	 * DESTRUCTOR
 	 * ---------------------------------------------------------------------
 	 * Cleans up all dynamically allocated items in the inventory.
 	 **********************************************************************/
 	~Library();
+
+	/***********************************************************************
+	 * PUBLIC MEMBER FUNCTION addShelf
+	 * ---------------------------------------------------------------------
+	 * Adds another row(shelf) to the library inventory
+	 * ---------------------------------------------------------------------
+	 * => Returns nothing; modifies libraryInventory size
+	 **********************************************************************/
+	void addShelf();
 
 	/***********************************************************************
 	 * PUBLIC MEMBER FUNCTION []
@@ -68,7 +87,7 @@ public:
 	 * ---------------------------------------------------------------------
 	 * => Returns a reference to a vector of Item pointers.
 	 **********************************************************************/
-	vector<Item*>& operator[](const int& index);
+	vector<Item*>& operator[](int index);
 
 	/***********************************************************************
 	 * PUBLIC MEMBER FUNCTION addItem
@@ -77,8 +96,8 @@ public:
 	 * ---------------------------------------------------------------------
 	 * => Returns nothing; modifies libraryInventory.
 	 **********************************************************************/
-	void addItem(Item& item);
-	
+	void addItem(Item* item, int row, int col);
+
 	/***********************************************************************
 	 * PUBLIC MEMBER FUNCTION checkoutItem
 	 * ---------------------------------------------------------------------
@@ -88,38 +107,38 @@ public:
 	 * ---------------------------------------------------------------------
 	 * => Returns nothing; gets user input and modifies a file.
 	 **********************************************************************/
-	void checkoutItem(ofstream& checkoutFile, Item& item, string name);
-	
+	void checkoutItem(ofstream& checkoutFile, Item& item, const string name);
+
 	/***********************************************************************
 	 * PUBLIC MEMBER FUNCTION checkinItem
 	 * ---------------------------------------------------------------------
-	 * Checks in an Item from libraryInventory. If the Item was never 
+	 * Checks in an Item from libraryInventory. If the Item was never
 	 * checked out, the system will notify the user via console output.
 	 * ---------------------------------------------------------------------
-	 * => Returns nothing; outputs if 
+	 * => Returns nothing; outputs if
 	 **********************************************************************/
 	void checkinItem(Item& item);
-	
+
 	/***********************************************************************
 	 * PUBLIC MEMBER FUNCTION printInventory
 	 * ---------------------------------------------------------------------
-	 * Prints out all Items and their shelf and compartment locations in 
-	 * libraryInventory. 
+	 * Prints out all Items and their shelf and compartment locations in
+	 * libraryInventory.
 	 * ---------------------------------------------------------------------
 	 * => Returns nothing; outputs inventory.
 	 **********************************************************************/
-	void printInventory();
-	
+	void printInventory() const;
+
 	/***********************************************************************
 	 * PUBLIC MEMBER FUNCTION printCheckOutedItems
 	 * ---------------------------------------------------------------------
-	 * Prints out all checked out Items and the name of the person who 
+	 * Prints out all checked out Items and the name of the person who
 	 * checked them out and their due date.
 	 * ---------------------------------------------------------------------
 	 * => Returns nothing; outputs checked out inventory.
 	 **********************************************************************/
-	void printCheckOutedItems(ifstream& checkoutFile);
-	
+	void printCheckOutedItems(ifstream& checkoutFile) const;
+
 	/***********************************************************************
 	 * PUBLIC MEMBER FUNCTION swapItems
 	 * ---------------------------------------------------------------------
@@ -128,8 +147,26 @@ public:
 	 * ---------------------------------------------------------------------
 	 * => Returns nothing; outputs checked out inventory.
 	 **********************************************************************/
-	void swapItems(const int row1, const int col1, const int row2, const int col2);
-	
+	void swapItems(int row1, int col1, int row2, int col2);
+
+	/***********************************************************************
+	 * PUBLIC MEMBER FUNCTION validateRow
+	 * ---------------------------------------------------------------------
+	 * Validates row index for in bounds, throws exception if invalid
+	 * ---------------------------------------------------------------------
+	 * => Returns nothing; validates row
+	 **********************************************************************/
+	void validateRow(int row) const;
+
+	/***********************************************************************
+	 * PUBLIC MEMBER FUNCTION validateColumn
+	 * ---------------------------------------------------------------------
+	 * Validates column index for in bounds, throws exception if invalid
+	 * ---------------------------------------------------------------------
+	 * => Returns nothing; validates column in a row
+	 **********************************************************************/
+	void validateColumn(int row, int col) const;
+
 };
 
 

@@ -1,6 +1,7 @@
 #include "Magazine.h"
 
-Magazine::Magazine(const std::string& name, const std::string& description, int id, const std::string& edition, const std::string& mainArticle)
+Magazine::Magazine(const std::string& name, const std::string& description, int id,
+				   const std::string& edition, const std::string& mainArticle)
     : Item(name, description, id),  edition(edition), mainArticle(mainArticle){ }
 
 void Magazine::print(std::ostream& os) const {

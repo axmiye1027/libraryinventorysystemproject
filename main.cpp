@@ -1,196 +1,208 @@
+#include<iostream>
+#include<vector>
+#include<fstream>
 #include "Library.h"
-#include <iostream>
-#include <fstream>
-#include <vector>
+#include "Book.h"
+#include "Movie.h"
+#include "Magazine.h"
 
 using namespace std;
 
 int main()
 {
     cout << "========================================\n";
-    cout << "Library Inventory System Test\n";
+    cout << "Library Inventory System\n";
     cout << "========================================\n\n";
 
-    // Create library instance
-    Library library;
+	try
+	{
+		Library library(3);
 
-    // ============================================
-    // TEST 1: Add items to storage
-    // ============================================
-    cout << "TEST 1: Adding items to storage...\n";
-    cout << "----------------------------------------\n";
+	    // Create books
+	    Book* book1 = new Book("Dickens's classic novel", 1001,
+	                          "Great Expectations", "Charles Dickens", "1861");
+	    Book* book2 = new Book("Winner of the Pulitzer Prize for Fiction", 1002,
+	                          "To Kill a Mockingbird", "Harper Lee", "1960");
 
-    // Create books 
-    Book* book1 = new Book("Dickens's classic novel", 1001, 
-                          "Great Expectations", "Charles Dickens", "1861");
-    Book* book2 = new Book("Winner of the Pulitzer Prize for Fiction", 1002, 
-                          "To Kill a Mockingbird", "Harper Lee", "1960");
+	    // Create movies
+	    vector<string> actors1 = {"Arnold Schwarzenegger", "Linda Hamilton", "Michael Biehn"};
+	    Movie* movie1 = new Movie("The classic action film that started the Terminator franchise", 2001,
+	                             "The Terminator", "James Cameron", actors1);
 
-    // Create movies
-    vector<string> actors1 = {"Arnold Schwarzenegger", "Linda Hamilton", "Michael Biehn"};
-    Movie* movie1 = new Movie("The classic action film that started the Terminator franchise", 2001, 
-                             "The Terminator", "James Cameron", actors1);
-    
-    vector<string> actors2 = {"Elijah Wood", "Ian McKellen", "Viggo Mortensen"};
-    Movie* movie2 = new Movie("The classic fantasy film that started the Lord of the Rings franchise", 2002, 
-                             "The Lord of the Rings", "Peter Jackson", actors2);
-    
-    // Create magazines
-    Magazine* mag1 = new Magazine("Wired", "Covering the latest in technology and science", 3001, 
-                                 "January 2024", "AI Revolution");
-    Magazine* mag2 = new Magazine("The New York Times", "All the news that's fit to print", 3002, 
-                                 "February 2024", "Global Economy");
+	    vector<string> actors2 = {"Elijah Wood", "Ian McKellen", "Viggo Mortensen"};
+	    Movie* movie2 = new Movie("The classic fantasy film that started the Lord of the Rings franchise", 2002,
+	                             "The Lord of the Rings", "Peter Jackson", actors2);
 
-    // Add items to library
-    library.addItem(*book1);
-    library.addItem(*book2);
-    library.addItem(*movie1);
-    library.addItem(*movie2);
-    library.addItem(*mag1);
-    library.addItem(*mag2);
+	    // Create magazines
+	    Magazine* mag1 = new Magazine("Wired", "Covering the latest in technology and science", 3001,
+	                                 "January 2024", "AI Revolution");
+	    Magazine* mag2 = new Magazine("The New York Times", "All the news that's fit to print", 3002,
+	                                 "February 2024", "Global Economy");
 
-    cout << "Successfully added 6 items to the library.\n\n";
+	    //Adding items to library
+	    library.addItem(book1, 0, 0);
+	    library.addItem(book2, 0, 1);
+	    library.addItem(movie1, 1, 0);
+	    library.addItem(movie2, 1, 1);
+	    library.addItem(mag1, 2, 0);
+	    library.addItem(mag2, 2, 1);
 
-    // ============================================
-    // TEST 2: Print initial inventory
-    // ============================================
-    cout << "TEST 2: Printing initial inventory...\n";
-    cout << "----------------------------------------\n";
-    library.printInventory();
-    cout << "\n";
+	    cout << "Print items in library storage:\n";
+	    cout << "--------------------------------\n";
+	    library.printInventory();
+	    cout << endl;
 
-    // ============================================
-    // TEST 3: Check out items
-    // ============================================
-    cout << "TEST 3: Checking out items...\n";
-    cout << "----------------------------------------\n";
+	    //Display Item info using overloaded[] operator
+	    cout << "Testing overloaded[] operator - expected item title: \"Great Expectations\"\n";
+	    cout << "-------------------------------------------------------------------------\n";
+	    cout << library[0][0];
+	    cout << endl;
 
-    // Open checkout file for writing
-    ofstream checkoutFile("checkout.txt");
-    if (!checkoutFile)
-    {
-        cerr << "Error: Could not open checkout.txt for writing.\n";
-        return 1;
-    }
+	    //Check out items (all books)
+	    ofstream checkoutFile("checkout.txt");
 
-    // Check out some items
-    library.checkoutItem(checkoutFile, *book1, "Alice Johnson");
-    cout << "Checked out: " << book1->getName() << " to Alice Johnson\n";
+	    library.checkoutItem(checkoutFile, *book1, "Alice Johnson");
+	    library.checkoutItem(checkoutFile, *book2, "Bob Williams");
 
-    library.checkoutItem(checkoutFile, *movie1, "Bob Williams");
-    cout << "Checked out: " << movie1->getName() << " to Bob Williams\n";
+	    checkoutFile.close();
+	    cout << endl;
 
-    library.checkoutItem(checkoutFile, *mag1, "Charlie Brown");
-    cout << "Checked out: " << mag1->getName() << " to Charlie Brown\n";
+	    //Print inventory after checkout (should be just magazines and movies)
+	    cout << "Printing all items in library storage:\n";
+	    cout << "-------------------------------------\n";
+	    library.printInventory();
+	    cout << endl;
 
-    checkoutFile.close();
-    cout << "\n";
+	    //Read check out file and print checked-out items
+	    cout << "Printing checked-out items from file\n";
+	    cout << "------------------------------------\n";
+	    ifstream checkoutReadFile("checkout.txt");
 
-    // ============================================
-    // TEST 4: Print inventory after checkout
-    // ============================================
-    cout << "TEST 4: Printing inventory after checkout...\n";
-    cout << "----------------------------------------\n";
-    library.printInventory();
-    cout << "\n";
+	    library.printCheckOutedItems(checkoutReadFile);
+	    cout << endl << endl;
+	    checkoutReadFile.close();
 
-    // ============================================
-    // TEST 5: Print checked-out items from file
-    // ============================================
-    cout << "TEST 5: Printing checked-out items from file...\n";
-    cout << "----------------------------------------\n";
-    ifstream checkoutReadFile("checkout.txt");
-    if (checkoutReadFile)
-    {
-        library.printCheckOutedItems(checkoutReadFile);
-        checkoutReadFile.close();
-    }
-    else
-    {
-        cerr << "Error: Could not open checkout.txt for reading.\n";
-    }
-    cout << "\n";
+	    //Checking in items
+	    library.checkinItem(*book1);
+	    cout << "Printing all items in storage - \"Great Expectations\" should be first\n";
+	    cout << "----------------------------------------------------------------------\n";
+	    library.printInventory();
+	    cout << endl;
 
-    // ============================================
-    // TEST 6: Check in items
-    // ============================================
-    cout << "TEST 6: Checking in items...\n";
-    cout << "----------------------------------------\n";
-    
-    library.checkinItem(*book1);
-    cout << "Checked in: " << book1->getName() << "\n";
+	    //Swapping Items
+	    cout << "**TESTING SWAPPING ITEMS**\n";
+	    cout << "-----------------------\n\n";
 
-    library.checkinItem(*movie1);
-    cout << "Checked in: " << movie1->getName() << "\n";
-    cout << "\n";
+	    cout << "Item at library[2][0] before swap:\n";
+	    cout << "----------------------------------\n";
+	    cout << library[2][0];
+	    cout << endl;
+	    cout << "Item at library[2][1] before swap:\n";
+	    cout << "----------------------------------\n";
+	    cout << library[2][1];
+	    cout << endl;
 
-    // ============================================
-    // TEST 7: Print inventory after check-in
-    // ============================================
-    cout << "TEST 7: Printing inventory after check-in...\n";
-    cout << "----------------------------------------\n";
-    library.printInventory();
-    cout << "\n";
+	    library.swapItems(2, 0, 2, 1);
 
-    // ============================================
-    // TEST 8: Swap items operation
-    // ============================================
-    cout << "TEST 8: Performing swap operations...\n";
-    cout << "----------------------------------------\n";
-    
-    // Swap items at different positions
-    cout << "Swapping item at [0][0] with item at [1][0]...\n";
-    library.swapItems(0, 0, 1, 0);
-    cout << "Swap successful.\n\n";
+	    cout << "Item at library[2][0] after swap:\n";
+	    cout << "----------------------------------\n";
+	    cout << library[2][0];
+	    cout << endl;
+	    cout << "Item at library[2][1] after swap:\n";
+	    cout << "----------------------------------\n";
+	    cout << library[2][1];
+	    cout << endl;
 
-    cout << "Inventory after swap:\n";
-    library.printInventory();
-    cout << "\n";
+	    cout << "**TESTING ERROR HANDLING**\n";
+	    cout << "---------------------------\n";
 
-    // Swap back
-    cout << "Swapping back: [1][0] with [0][0]...\n";
-    library.swapItems(1, 0, 0, 0);
-    cout << "Swap successful.\n\n";
+	    //Error Handling - adding to invalid compartment
+	    Book* testBook = new Book("Test", 0, "Test", "NULL", "NULL");
+	    try
+	    {
+	    	library.addItem(testBook, 6, 0);
+	    }
+	    catch(const exception& e)
+	    {
+	    	cout << "Expected exception: invalid row\n";
+	    	cout << "Actual: " <<  e.what() << endl << endl;
+	    }
 
-    // ============================================
-    // TEST 9: Error handling demonstrations
-    // ============================================
-    cout << "TEST 9: Error handling demonstrations...\n";
-    cout << "----------------------------------------\n";
+	    //Error Handling - adding to invalid row
+	    try
+	    {
+	    	library.addItem(testBook, 2, 16);
+	    }
+	    catch(const exception& e)
+	    {
+	    	cout << "Expected exception: invalid column/compartment\n";
+	    	cout << "Actual: " <<  e.what() << endl << endl;
+	    	delete testBook;
+	    }
 
-    // Error 1: Try to check out an already checked out item
-    cout << "Error Test 1: Attempting to check out an already checked-out item...\n";
-    checkoutFile.open("checkout.txt", ios::app);
-    library.checkoutItem(checkoutFile, *mag1, "David Lee");
-    checkoutFile.close();
-    cout << "\n";
+	    //Error Handling - swapping with empty compartment
+	    try
+	    {
+	    	library.swapItems(0, 0, 0, 13);
+	    }
+	    catch(const exception& e)
+	    {
+	    	cout << "Expected exception: cannot swap with empty compartment\n";
+	    	cout << "Actual: " <<  e.what() << endl << endl;
+	    }
 
-    // Error 2: Try to check in an item that's not checked out
-    cout << "Error Test 2: Attempting to check in an item that's not checked out...\n";
-    library.checkinItem(*book2);
-    cout << "\n";
+	    //Error Handling - checking out item that is already checked out
+	    try
+	    {
+	    	checkoutFile.open("checkout.txt", ios::app);
+	    	library.checkoutItem(checkoutFile, *mag1, "David Lee");
+	    	library.checkoutItem(checkoutFile, *mag1, "Kevind Dee");
+	    }
+	    catch(const exception& e)
+	    {
+	    	cout << "Expected exception: item is already checked out\n";
+	    	cout << "Actual: " <<  e.what() << endl << endl;
+	    	checkoutFile.close();
+	    }
 
-    // Error 3: Try to swap with invalid indices (this will cause undefined behavior/crash)
-    // We'll demonstrate this with a comment and a safer approach would be to add bounds checking
-    cout << "Error Test 3: Attempting swap with invalid indices...\n";
-    cout << "Note: Current implementation does not validate indices.\n";
-    cout << "Swapping [0][0] with [10][10] (invalid indices)...\n";
-    // Uncomment the line below to see the crash:
-    // library.swapItems(0, 0, 10, 10);  // This would cause undefined behavior
-    cout << "(Skipped to prevent crash - would need bounds checking in swapItems)\n\n";
+	    //Error Handling - checking out item with blank name
+	    try
+	    {
+	    	checkoutFile.open("checkout.txt", ios::app);
+	    	library.checkoutItem(checkoutFile, *movie1, "");
+	    }
+	    catch(const exception& e)
+	    {
+	    	cout << "Expected exception: cannot check out item with blank name\n";
+	    	cout << "Actual: " <<  e.what() << endl << endl;
+	    	checkoutFile.close();
+	    }
 
-    // ============================================
-    // TEST 10: Final inventory state
-    // ============================================
-    cout << "TEST 10: Final inventory state...\n";
-    cout << "----------------------------------------\n";
-    library.printInventory();
-    cout << "\n";
+	    //Error Handling - checking in item that was not checked out
+	    try
+	    {
+	    	library.checkinItem(*movie2);
+	    }
+	    catch(const exception& e)
+	    {
+	    	cout << "Expected exception: cannot check in item that hasn't been check out\n";
+	    	cout << "Actual: " <<  e.what() << endl << endl;
+	    }
 
-    cout << "========================================\n";
-    cout << "All tests complete.\n";
-    cout << "========================================\n";
+	    //Error Handling - accessing invalid shelf
+	    try
+	    {
+	    	library[100];
+	    }
+	    catch(const exception& e)
+	    {
+	    	cout << "Expected exception: cannot access invalid row\n";
+	    	cout << "Actual: " <<  e.what() << endl << endl;
+	    }
 
-    // Cleanup: Library destructor will handle deleting items
-    return 0;
+	}
+	catch(const exception& e)
+	{
+		cout << "Exception error: " << e.what() << endl;
+	}
 }

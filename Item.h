@@ -35,9 +35,17 @@ public:
 
 	virtual void print(ostream& os) const = 0;
 
-	friend ostream& operator << (ostream & os, const Item& item);
+	friend ostream& operator<< (ostream & os, const Item& item);
 };
 
+inline ostream& operator<<(ostream& os, const Item* item)
+{
+	if(item == nullptr)
+	{
+		return os << "EMPTY";
+	}
 
+	return os << *item;
+}
 
 #endif
