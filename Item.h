@@ -38,14 +38,5 @@ public:
 	friend ostream& operator<< (ostream & os, const Item& item);
 };
 
-inline ostream& operator<<(ostream& os, const Item* item)
-{
-	if(item == nullptr)
-	{
-		return os << "EMPTY";
-	}
-
-	return os << *item;
-}
 
 #endif

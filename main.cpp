@@ -55,7 +55,7 @@ int main()
 	    //Display Item info using overloaded[] operator
 	    cout << "Testing overloaded[] operator - expected item title: \"Great Expectations\"\n";
 	    cout << "-------------------------------------------------------------------------\n";
-	    cout << library[0][0];
+	    cout << *library[0][0];
 	    cout << endl;
 
 	    //Check out items (all books)
@@ -95,22 +95,22 @@ int main()
 
 	    cout << "Item at library[2][0] before swap:\n";
 	    cout << "----------------------------------\n";
-	    cout << library[2][0];
+	    cout << *library[2][0];
 	    cout << endl;
 	    cout << "Item at library[2][1] before swap:\n";
 	    cout << "----------------------------------\n";
-	    cout << library[2][1];
+	    cout << *library[2][1];
 	    cout << endl;
 
 	    library.swapItems(2, 0, 2, 1);
 
 	    cout << "Item at library[2][0] after swap:\n";
 	    cout << "----------------------------------\n";
-	    cout << library[2][0];
+	    cout << *library[2][0];
 	    cout << endl;
 	    cout << "Item at library[2][1] after swap:\n";
 	    cout << "----------------------------------\n";
-	    cout << library[2][1];
+	    cout << *library[2][1];
 	    cout << endl;
 
 	    cout << "**TESTING ERROR HANDLING**\n";
