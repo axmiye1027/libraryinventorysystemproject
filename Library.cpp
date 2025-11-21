@@ -154,20 +154,33 @@ void Library::printInventory() const
     }
 }
 
-void Library::printCheckOutedItems(ifstream& checkoutFile) const
+void Library::printCheckedOutItems() const
 {
-	if(!checkoutFile)
-	{
-		throw runtime_error("File not opened");
-	}
-
-    string itemName, borrowerName, dueDate;
-
-    while (getline(checkoutFile, itemName) &&
-    	   getline(checkoutFile, borrowerName) &&
-		   getline(checkoutFile, dueDate))
+    bool foundCheckedOut = false;
+    
+    for (int i = 0; i < (int)shelves.size(); i++)
     {
-        cout << "Item: " << itemName << " | Borrower: " << borrowerName << " | Due Date: " << dueDate << endl;
+        for (int j = 0; j < Shelf::getMaxCompartments(); j++)
+        {
+            const Compartment& compartment = shelves[i][j];
+            
+            if(compartment.getIsCheckedOut() && !compartment.isEmpty())
+            {
+                Item* item = compartment.getItem();
+                if(item != nullptr)
+                {
+                    cout << "Item: " << item->getName() 
+                         << " | Borrower: " << compartment.getBorrowerName()
+                         << " | Due Date: " << compartment.getDueDate() << endl;
+                    foundCheckedOut = true;
+                }
+            }
+        }
+    }
+    
+    if(!foundCheckedOut)
+    {
+        cout << "No items currently checked out." << endl;
     }
 }
 

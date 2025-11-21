@@ -131,11 +131,12 @@ public:
 	 * PUBLIC MEMBER FUNCTION printCheckOutedItems
 	 * ---------------------------------------------------------------------
 	 * Prints out all checked out Items and the name of the person who
-	 * checked them out and their due date.
+	 * checked them out and their due date. Reads from actual compartment
+	 * states to show current checked-out status.
 	 * ---------------------------------------------------------------------
 	 * => Returns nothing; outputs checked out inventory.
 	 **********************************************************************/
-	void printCheckOutedItems(ifstream& checkoutFile) const;
+	void printCheckedOutItems() const;
 
 	/***********************************************************************
 	 * PUBLIC MEMBER FUNCTION swapItems

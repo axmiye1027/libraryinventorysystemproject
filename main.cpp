@@ -41,153 +41,79 @@ int main()
 	    Magazine* mag2 = new Magazine("The New York Times", "All the news that's fit to print", 3002,
 	                                 "February 2024", "Global Economy");
 
-	    //Adding items to library
+	    // SYSTEM OPERATION 1: Add an Item
+	    cout << "1. ADDING ITEMS TO LIBRARY\n";
+	    cout << "===========================\n";
 	    library.addItem(book1, 0, 0);
+	    cout << "Added: \"" << book1->getName() << "\" to Shelf " << 0 << ", Compartment " << 0 << endl;
 	    library.addItem(book2, 0, 1);
+	    cout << "Added: \"" << book2->getName() << "\" to Shelf " << 0 << ", Compartment " << 1 << endl;
 	    library.addItem(movie1, 1, 0);
+	    cout << "Added: \"" << movie1->getName() << "\" to Shelf " << 1 << ", Compartment " << 0 << endl;
 	    library.addItem(movie2, 1, 1);
+	    cout << "Added: \"" << movie2->getName() << "\" to Shelf " << 1 << ", Compartment " << 1 << endl;
 	    library.addItem(mag1, 2, 0);
+	    cout << "Added: \"" << mag1->getName() << "\" to Shelf " << 2 << ", Compartment " << 0 << endl;
 	    library.addItem(mag2, 2, 1);
-
-	    cout << "Print items in library storage:\n";
-	    cout << "--------------------------------\n";
-	    library.printInventory();
+	    cout << "Added: \"" << mag2->getName() << "\" to Shelf " << 2 << ", Compartment " << 1 << endl;
 	    cout << endl;
 
-	    //Display Item info using overloaded[] operator
-	    cout << "Testing overloaded[] operator - expected item title: \"Great Expectations\"\n";
-	    cout << "-------------------------------------------------------------------------\n";
-	    Compartment& comp = library[0][0];
-	    Item* item = comp.getItem();
-	    if(item != nullptr)
-	    {
-	    	cout << *item;
-	    }
-	    cout << endl;
-
-	    // Testing Compartment class directly
-	    cout << "**TESTING COMPARTMENT CLASS**\n";
-	    cout << "-----------------------------\n";
-	    cout << "Compartment at [0][0] isEmpty(): " << (comp.isEmpty() ? "true" : "false") << endl;
-	    cout << "Compartment at [0][0] isCheckedOut(): " << (comp.getIsCheckedOut() ? "true" : "false") << endl;
-	    cout << endl;
-
-	    // Testing Shelf class
-	    cout << "**TESTING SHELF CLASS**\n";
-	    cout << "-----------------------\n";
-	    Shelf& shelf = library[0];
-	    cout << "Shelf::getMaxCompartments(): " << Shelf::getMaxCompartments() << endl;
-	    cout << "Number of compartments per shelf: " << Shelf::getMaxCompartments() << endl;
-	    
-	    // Demonstrate accessing Compartment through Shelf
-	    cout << "Accessing Compartment [0][1] through Shelf object:\n";
-	    Compartment& shelfComp = shelf[1];
-	    Item* shelfItem = shelfComp.getItem();
-	    if(shelfItem != nullptr)
-	    {
-	    	cout << "  Item in Shelf[0], Compartment[1]: " << shelfItem->getName() << endl;
-	    }
-	    cout << endl;
-
-	    //Check out items (all books)
+	    // SYSTEM OPERATION 2: Checkout an Item
+	    cout << "2. CHECKING OUT ITEMS\n";
+	    cout << "======================\n";
 	    ofstream checkoutFile("checkout.txt");
-
 	    library.checkoutItem(checkoutFile, 0, 0, "Alice Johnson");
+	    Item* checkedOut1 = library[0][0].getItem();
+	    if(checkedOut1 != nullptr)
+	    {
+	    	cout << "\"" << checkedOut1->getName() << "\" checked out by: Alice Johnson" << endl;
+	    }
 	    library.checkoutItem(checkoutFile, 0, 1, "Bob Williams");
-
+	    Item* checkedOut2 = library[0][1].getItem();
+	    if(checkedOut2 != nullptr)
+	    {
+	    	cout << "\"" << checkedOut2->getName() << "\" checked out by: Bob Williams" << endl;
+	    }
 	    checkoutFile.close();
 	    cout << endl;
 
-	    // Testing Compartment checkout information (shows OOP design)
-	    cout << "**TESTING COMPARTMENT CHECKOUT INFORMATION**\n";
-	    cout << "--------------------------------------------\n";
-	    Compartment& checkedOutComp1 = library[0][0];
-	    Compartment& checkedOutComp2 = library[0][1];
-	    cout << "Compartment [0][0] checkout status: " << (checkedOutComp1.getIsCheckedOut() ? "CHECKED OUT" : "AVAILABLE") << endl;
-	    cout << "Compartment [0][0] borrower: " << checkedOutComp1.getBorrowerName() << endl;
-	    cout << "Compartment [0][0] due date: " << checkedOutComp1.getDueDate() << endl;
-	    cout << "Compartment [0][1] checkout status: " << (checkedOutComp2.getIsCheckedOut() ? "CHECKED OUT" : "AVAILABLE") << endl;
-	    cout << "Compartment [0][1] borrower: " << checkedOutComp2.getBorrowerName() << endl;
-	    cout << "Compartment [0][1] due date: " << checkedOutComp2.getDueDate() << endl;
-	    cout << endl;
-
-	    //Print inventory after checkout (should be just magazines and movies)
-	    cout << "Printing all items in library storage:\n";
-	    cout << "-------------------------------------\n";
-	    library.printInventory();
-	    cout << endl;
-
-	    //Read check out file and print checked-out items
-	    cout << "Printing checked-out items from file\n";
-	    cout << "------------------------------------\n";
-	    ifstream checkoutReadFile("checkout.txt");
-
-	    library.printCheckOutedItems(checkoutReadFile);
-	    cout << endl << endl;
-	    checkoutReadFile.close();
-
-	    //Checking in items
+	    // SYSTEM OPERATION 3: Checkin an Item
+	    cout << "3. CHECKING IN ITEMS\n";
+	    cout << "=====================\n";
+	    // Get borrower name before checkin
+	    string borrowerName = library[0][0].getBorrowerName();
+	    Item* returnedItem = library[0][0].getItem();
 	    library.checkinItem(0, 0);
-	    cout << "Printing all items in storage - \"Great Expectations\" should be first\n";
-	    cout << "----------------------------------------------------------------------\n";
+	    if(returnedItem != nullptr)
+	    {
+	    	cout << borrowerName << " returned: \"" << returnedItem->getName() << "\"" << endl;
+	    	cout << "Item placed back in Shelf " << 0 << ", Compartment " << 0 << endl;
+	    }
+	    cout << endl;
+
+	    // SYSTEM OPERATION 4: Print Items in Storage
+	    cout << "4. PRINTING ITEMS IN STORAGE\n";
+	    cout << "=============================\n";
 	    library.printInventory();
 	    cout << endl;
 
-	    //Swapping Items
-	    cout << "**TESTING SWAPPING ITEMS**\n";
-	    cout << "-----------------------\n\n";
-
-	    cout << "Item at library[2][0] before swap:\n";
-	    cout << "----------------------------------\n";
-	    Item* item1 = library[2][0].getItem();
-	    if(item1 != nullptr)
-	    {
-	    	cout << *item1;
-	    }
-	    cout << endl;
-	    cout << "Item at library[2][1] before swap:\n";
-	    cout << "----------------------------------\n";
-	    Item* item2 = library[2][1].getItem();
-	    if(item2 != nullptr)
-	    {
-	    	cout << *item2;
-	    }
+	    // SYSTEM OPERATION 5: Print Checked-Out Items
+	    cout << "5. PRINTING CHECKED-OUT ITEMS\n";
+	    cout << "==============================\n";
+	    library.printCheckedOutItems();
 	    cout << endl;
 
+	    // SYSTEM OPERATION 6: Swap Items
+	    cout << "6. SWAPPING ITEMS\n";
+	    cout << "==================\n";
+	    // Get item names before swap
+	    Item* swapItem1 = library[2][0].getItem();
+	    Item* swapItem2 = library[2][1].getItem();
+	    string item1Name = (swapItem1 != nullptr) ? swapItem1->getName() : "Unknown";
+	    string item2Name = (swapItem2 != nullptr) ? swapItem2->getName() : "Unknown";
 	    library.swapItems(2, 0, 2, 1);
-
-	    cout << "Item at library[2][0] after swap:\n";
-	    cout << "----------------------------------\n";
-	    item1 = library[2][0].getItem();
-	    if(item1 != nullptr)
-	    {
-	    	cout << *item1;
-	    }
-	    cout << endl;
-	    cout << "Item at library[2][1] after swap:\n";
-	    cout << "----------------------------------\n";
-	    item2 = library[2][1].getItem();
-	    if(item2 != nullptr)
-	    {
-	    	cout << *item2;
-	    }
-	    cout << endl;
-
-	    // Test swapping with checkout information
-	    cout << "**TESTING SWAP WITH CHECKOUT INFO**\n";
-	    cout << "-----------------------------------\n";
-	    // Checkout an item at [2][0], then swap it
-	    checkoutFile.open("checkout.txt", ios::app);
-	    library.checkoutItem(checkoutFile, 2, 0, "James K. Swapper");
-	    checkoutFile.close();
-	    
-	    cout << "Before swap - Compartment [2][0] checked out by: " << library[2][0].getBorrowerName() << endl;
-	    cout << "Before swap - Compartment [2][1] checked out: " << (library[2][1].getIsCheckedOut() ? "YES" : "NO") << endl;
-	    
-	    library.swapItems(2, 0, 2, 1);
-	    
-	    cout << "After swap - Compartment [2][0] checked out: " << (library[2][0].getIsCheckedOut() ? "YES" : "NO") << endl;
-	    cout << "After swap - Compartment [2][1] checked out by: " << library[2][1].getBorrowerName() << endl;
+	    cout << "Swapped: \"" << item1Name << "\" (Shelf " << 2 << ", Compartment " << 0 << ") ";
+	    cout << "with \"" << item2Name << "\" (Shelf " << 2 << ", Compartment " << 1 << ")" << endl;
 	    cout << endl;
 
 	    cout << "**TESTING ERROR HANDLING**\n";
