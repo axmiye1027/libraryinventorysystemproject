@@ -6,167 +6,147 @@
  * DUE DATE			: ...
  **************************************************************************/
 
-#ifndef LIBRARY_H
-#define LIBRARY_H
+#ifndef COMPARTMENT_H
+#define COMPARTMENT_H
 
-#include <iostream>		/* cin, cout			*/
-#include <iomanip>		/* setw					*/
-#include <string>		/* string class			*/
-#include <vector>		/* vector STL	 		*/
-#include <sstream>		/* ostringstream 		*/
-#include <fstream>		/* ofstream				*/
-#include <stdexcept>    /* exceptions			*/
-#include "Item.h"		/* Item class       	*/
-#include "Book.h"		/* Book class       	*/
-#include "Movie.h"		/* Movie class      	*/
-#include "Magazine.h"	/* Magazine class  		*/
-#include "Shelf.h"		/* Shelf class			*/
+#include <iostream>
+#include <string>
+#include "Item.h"
+
 using namespace std;
 
 /***************************************************************************
- * CLASS Library
+ * CLASS Compartment
  * -------------------------------------------------------------------------
- * Represents a single library system of Items.
+ * Represents a single compartment in a shelf that can hold an Item.
+ * Manages the Item pointer and checkout information.
  **************************************************************************/
-class Library
+class Compartment
 {
 private:
 	/***********************************************************************
-	 * PRIVATE DATA MEMBER shelves
+	 * PRIVATE DATA MEMBER item
 	 * ---------------------------------------------------------------------
-	 * Vector of Shelf objects. Each shelf contains 15 compartments.
-	 * The number of shelves is unrestricted.
+	 * Pointer to the Item stored in this compartment. nullptr if empty.
 	 **********************************************************************/
-	vector<Shelf> shelves;
+	Item* item;
+
+	/***********************************************************************
+	 * PRIVATE DATA MEMBER borrowerName
+	 * ---------------------------------------------------------------------
+	 * Name of the person who checked out the item.
+	 **********************************************************************/
+	string borrowerName;
+
+	/***********************************************************************
+	 * PRIVATE DATA MEMBER dueDate
+	 * ---------------------------------------------------------------------
+	 * Due date for returning the item.
+	 **********************************************************************/
+	string dueDate;
+
+	/***********************************************************************
+	 * PRIVATE DATA MEMBER isCheckedOut
+	 * ---------------------------------------------------------------------
+	 * Flag indicating if the item in this compartment is checked out.
+	 **********************************************************************/
+	bool isCheckedOut;
 
 public:
 	/***********************************************************************
 	 * CONSTRUCTOR
 	 * ---------------------------------------------------------------------
-	 * Initializes an empty library inventory.
+	 * Initializes an empty compartment with no item.
 	 **********************************************************************/
-	Library();
-
-	/***********************************************************************
-	 * CONSTRUCTOR
-	 * ---------------------------------------------------------------------
-	 * Initializes a library inventory with a number of shelves
-	 **********************************************************************/
-	Library(int numberOfShelves);
+	Compartment();
 
 	/***********************************************************************
 	 * DESTRUCTOR
 	 * ---------------------------------------------------------------------
-	 * Cleans up all dynamically allocated items in the inventory.
+	 * Does not delete the item (Library manages item lifecycle).
 	 **********************************************************************/
-	~Library();
+	~Compartment() = default;
 
 	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION addShelf
+	 * PUBLIC MEMBER FUNCTION getItem
 	 * ---------------------------------------------------------------------
-	 * Adds another row(shelf) to the library inventory
+	 * Returns a pointer to the item in this compartment.
 	 * ---------------------------------------------------------------------
-	 * => Returns nothing; modifies libraryInventory size
+	 * => Returns Item* (nullptr if empty)
 	 **********************************************************************/
-	void addShelf();
+	Item* getItem() const;
 
 	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION []
+	 * PUBLIC MEMBER FUNCTION setItem
 	 * ---------------------------------------------------------------------
-	 * Overloads the C++ [] operator. In the Library class, it allows access
-	 * to shelves. Returns a Shelf reference which can then be indexed
-	 * again to access compartments.
-	 *
-	 * EXAMPLE (without overloading)
-	 * 		library1.getShelf(3).getCompartment(4);
-	 *
-	 * EXAMPLE (with overloading)
-	 * 		library1[3][4];  // Returns Compartment&
+	 * Sets the item in this compartment.
 	 * ---------------------------------------------------------------------
-	 * => Returns a reference to a Shelf.
+	 * => Returns nothing; sets item pointer
 	 **********************************************************************/
-	Shelf& operator[](int index);
+	void setItem(Item* newItem);
 
 	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION addItem
+	 * PUBLIC MEMBER FUNCTION isEmpty
 	 * ---------------------------------------------------------------------
-	 * Adds an Item from the libraryInventory.
+	 * Checks if this compartment is empty (no item).
 	 * ---------------------------------------------------------------------
-	 * => Returns nothing; modifies libraryInventory.
+	 * => Returns true if empty, false otherwise
 	 **********************************************************************/
-	void addItem(Item* item, int row, int col);
+	bool isEmpty() const;
 
 	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION checkoutItem
+	 * PUBLIC MEMBER FUNCTION checkout
 	 * ---------------------------------------------------------------------
-	 * Checks out an Item from libraryInventory. Upon checkout, the system
-	 * record the name of the person who checked out the item and the due
-	 * due date for returning the item in a file.
+	 * Checks out the item in this compartment to a borrower.
 	 * ---------------------------------------------------------------------
-	 * => Returns nothing; gets user input and modifies a file.
+	 * => Returns true if successful, false if already checked out or empty
 	 **********************************************************************/
-	void checkoutItem(ofstream& checkoutFile, int row, int col, const string name);
+	bool checkout(const string& borrower, const string& due);
 
 	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION checkinItem
+	 * PUBLIC MEMBER FUNCTION checkin
 	 * ---------------------------------------------------------------------
-	 * Checks in an Item from libraryInventory at the specified location.
-	 * If the Item was never checked out, the system will throw an exception.
+	 * Checks in the item in this compartment.
 	 * ---------------------------------------------------------------------
-	 * => Returns nothing; checks in item at compartment
+	 * => Returns true if successful, false if not checked out
 	 **********************************************************************/
-	void checkinItem(int row, int col);
+	bool checkin();
 
 	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION printInventory
+	 * PUBLIC MEMBER FUNCTION getIsCheckedOut
 	 * ---------------------------------------------------------------------
-	 * Prints out all Items and their shelf and compartment locations in
-	 * libraryInventory.
+	 * Returns whether the item in this compartment is checked out.
 	 * ---------------------------------------------------------------------
-	 * => Returns nothing; outputs inventory.
+	 * => Returns true if checked out, false otherwise
 	 **********************************************************************/
-	void printInventory() const;
+	bool getIsCheckedOut() const;
 
 	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION printCheckOutedItems
+	 * PUBLIC MEMBER FUNCTION getBorrowerName
 	 * ---------------------------------------------------------------------
-	 * Prints out all checked out Items and the name of the person who
-	 * checked them out and their due date.
+	 * Returns the name of the borrower.
 	 * ---------------------------------------------------------------------
-	 * => Returns nothing; outputs checked out inventory.
+	 * => Returns borrower name string
 	 **********************************************************************/
-	void printCheckOutedItems(ifstream& checkoutFile) const;
+	string getBorrowerName() const;
 
 	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION swapItems
+	 * PUBLIC MEMBER FUNCTION getDueDate
 	 * ---------------------------------------------------------------------
-	 * Swaps the contents of two compartments in libraryInventory. If one
-	 * or both compartments are empty, the system will output an error.
+	 * Returns the due date for the checked out item.
 	 * ---------------------------------------------------------------------
-	 * => Returns nothing; outputs checked out inventory.
+	 * => Returns due date string
 	 **********************************************************************/
-	void swapItems(int row1, int col1, int row2, int col2);
+	string getDueDate() const;
 
 	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION validateRow
+	 * PUBLIC MEMBER FUNCTION clear
 	 * ---------------------------------------------------------------------
-	 * Validates row index for in bounds, throws exception if invalid
+	 * Clears the compartment (removes item reference).
 	 * ---------------------------------------------------------------------
-	 * => Returns nothing; validates row
+	 * => Returns nothing; clears compartment
 	 **********************************************************************/
-	void validateRow(int row) const;
-
-	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION validateColumn
-	 * ---------------------------------------------------------------------
-	 * Validates column index for in bounds and checks if compartment has item
-	 * ---------------------------------------------------------------------
-	 * => Returns nothing; validates column in a row
-	 **********************************************************************/
-	void validateColumn(int row, int col) const;
-
+	void clear();
 };
-
-
 
 #endif

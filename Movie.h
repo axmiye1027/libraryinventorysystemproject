@@ -16,6 +16,6 @@ public:
 
 	void addActor(const string& actor);
 
-	void print(ostream& os) const;
+	void print(ostream& os) const override;
 };
 #endif

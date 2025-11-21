@@ -1,10 +1,12 @@
-#include<iostream>
-#include<vector>
-#include<fstream>
+#include <iostream>
+#include <vector>
+#include <fstream>
 #include "Library.h"
 #include "Book.h"
 #include "Movie.h"
 #include "Magazine.h"
+#include "Shelf.h"
+#include "Compartment.h"
 
 using namespace std;
 
@@ -55,16 +57,58 @@ int main()
 	    //Display Item info using overloaded[] operator
 	    cout << "Testing overloaded[] operator - expected item title: \"Great Expectations\"\n";
 	    cout << "-------------------------------------------------------------------------\n";
-	    cout << *library[0][0];
+	    Compartment& comp = library[0][0];
+	    Item* item = comp.getItem();
+	    if(item != nullptr)
+	    {
+	    	cout << *item;
+	    }
+	    cout << endl;
+
+	    // Testing Compartment class directly
+	    cout << "**TESTING COMPARTMENT CLASS**\n";
+	    cout << "-----------------------------\n";
+	    cout << "Compartment at [0][0] isEmpty(): " << (comp.isEmpty() ? "true" : "false") << endl;
+	    cout << "Compartment at [0][0] isCheckedOut(): " << (comp.getIsCheckedOut() ? "true" : "false") << endl;
+	    cout << endl;
+
+	    // Testing Shelf class
+	    cout << "**TESTING SHELF CLASS**\n";
+	    cout << "-----------------------\n";
+	    Shelf& shelf = library[0];
+	    cout << "Shelf::getMaxCompartments(): " << Shelf::getMaxCompartments() << endl;
+	    cout << "Number of compartments per shelf: " << Shelf::getMaxCompartments() << endl;
+	    
+	    // Demonstrate accessing Compartment through Shelf
+	    cout << "Accessing Compartment [0][1] through Shelf object:\n";
+	    Compartment& shelfComp = shelf[1];
+	    Item* shelfItem = shelfComp.getItem();
+	    if(shelfItem != nullptr)
+	    {
+	    	cout << "  Item in Shelf[0], Compartment[1]: " << shelfItem->getName() << endl;
+	    }
 	    cout << endl;
 
 	    //Check out items (all books)
 	    ofstream checkoutFile("checkout.txt");
 
-	    library.checkoutItem(checkoutFile, *book1, "Alice Johnson");
-	    library.checkoutItem(checkoutFile, *book2, "Bob Williams");
+	    library.checkoutItem(checkoutFile, 0, 0, "Alice Johnson");
+	    library.checkoutItem(checkoutFile, 0, 1, "Bob Williams");
 
 	    checkoutFile.close();
+	    cout << endl;
+
+	    // Testing Compartment checkout information (shows OOP design)
+	    cout << "**TESTING COMPARTMENT CHECKOUT INFORMATION**\n";
+	    cout << "--------------------------------------------\n";
+	    Compartment& checkedOutComp1 = library[0][0];
+	    Compartment& checkedOutComp2 = library[0][1];
+	    cout << "Compartment [0][0] checkout status: " << (checkedOutComp1.getIsCheckedOut() ? "CHECKED OUT" : "AVAILABLE") << endl;
+	    cout << "Compartment [0][0] borrower: " << checkedOutComp1.getBorrowerName() << endl;
+	    cout << "Compartment [0][0] due date: " << checkedOutComp1.getDueDate() << endl;
+	    cout << "Compartment [0][1] checkout status: " << (checkedOutComp2.getIsCheckedOut() ? "CHECKED OUT" : "AVAILABLE") << endl;
+	    cout << "Compartment [0][1] borrower: " << checkedOutComp2.getBorrowerName() << endl;
+	    cout << "Compartment [0][1] due date: " << checkedOutComp2.getDueDate() << endl;
 	    cout << endl;
 
 	    //Print inventory after checkout (should be just magazines and movies)
@@ -83,7 +127,7 @@ int main()
 	    checkoutReadFile.close();
 
 	    //Checking in items
-	    library.checkinItem(*book1);
+	    library.checkinItem(0, 0);
 	    cout << "Printing all items in storage - \"Great Expectations\" should be first\n";
 	    cout << "----------------------------------------------------------------------\n";
 	    library.printInventory();
@@ -95,22 +139,55 @@ int main()
 
 	    cout << "Item at library[2][0] before swap:\n";
 	    cout << "----------------------------------\n";
-	    cout << *library[2][0];
+	    Item* item1 = library[2][0].getItem();
+	    if(item1 != nullptr)
+	    {
+	    	cout << *item1;
+	    }
 	    cout << endl;
 	    cout << "Item at library[2][1] before swap:\n";
 	    cout << "----------------------------------\n";
-	    cout << *library[2][1];
+	    Item* item2 = library[2][1].getItem();
+	    if(item2 != nullptr)
+	    {
+	    	cout << *item2;
+	    }
 	    cout << endl;
 
 	    library.swapItems(2, 0, 2, 1);
 
 	    cout << "Item at library[2][0] after swap:\n";
 	    cout << "----------------------------------\n";
-	    cout << *library[2][0];
+	    item1 = library[2][0].getItem();
+	    if(item1 != nullptr)
+	    {
+	    	cout << *item1;
+	    }
 	    cout << endl;
 	    cout << "Item at library[2][1] after swap:\n";
 	    cout << "----------------------------------\n";
-	    cout << *library[2][1];
+	    item2 = library[2][1].getItem();
+	    if(item2 != nullptr)
+	    {
+	    	cout << *item2;
+	    }
+	    cout << endl;
+
+	    // Test swapping with checkout information
+	    cout << "**TESTING SWAP WITH CHECKOUT INFO**\n";
+	    cout << "-----------------------------------\n";
+	    // Checkout an item at [2][0], then swap it
+	    checkoutFile.open("checkout.txt", ios::app);
+	    library.checkoutItem(checkoutFile, 2, 0, "James K. Swapper");
+	    checkoutFile.close();
+	    
+	    cout << "Before swap - Compartment [2][0] checked out by: " << library[2][0].getBorrowerName() << endl;
+	    cout << "Before swap - Compartment [2][1] checked out: " << (library[2][1].getIsCheckedOut() ? "YES" : "NO") << endl;
+	    
+	    library.swapItems(2, 0, 2, 1);
+	    
+	    cout << "After swap - Compartment [2][0] checked out: " << (library[2][0].getIsCheckedOut() ? "YES" : "NO") << endl;
+	    cout << "After swap - Compartment [2][1] checked out by: " << library[2][1].getBorrowerName() << endl;
 	    cout << endl;
 
 	    cout << "**TESTING ERROR HANDLING**\n";
@@ -155,8 +232,8 @@ int main()
 	    try
 	    {
 	    	checkoutFile.open("checkout.txt", ios::app);
-	    	library.checkoutItem(checkoutFile, *mag1, "David Lee");
-	    	library.checkoutItem(checkoutFile, *mag1, "Kevind Dee");
+	    	library.checkoutItem(checkoutFile, 2, 0, "David Lee");
+	    	library.checkoutItem(checkoutFile, 2, 0, "Kevind Dee");
 	    }
 	    catch(const exception& e)
 	    {
@@ -169,7 +246,7 @@ int main()
 	    try
 	    {
 	    	checkoutFile.open("checkout.txt", ios::app);
-	    	library.checkoutItem(checkoutFile, *movie1, "");
+	    	library.checkoutItem(checkoutFile, 1, 0, "");
 	    }
 	    catch(const exception& e)
 	    {
@@ -181,7 +258,7 @@ int main()
 	    //Error Handling - checking in item that was not checked out
 	    try
 	    {
-	    	library.checkinItem(*movie2);
+	    	library.checkinItem(1, 1);
 	    }
 	    catch(const exception& e)
 	    {
