@@ -6,14 +6,46 @@
  * DUE DATE			: ...
  **************************************************************************/
 
-#ifndef SHELF_H
-#define SHELF_H
+ #ifndef SHELF_H_
+#define SHELF_H_
 
-#include <iostream>
-#include <stdexcept>
-#include "Compartment.h"
+#include "Item.h"
+#include "Book.h"
+#include "Magazine.h"
+#include "Movie.h"
 
-using namespace std;
+/***************************************************************************
+ * STRUCT CheckOutInfo
+ * -------------------------------------------------------------------------
+ * Represents the check out information of borrower and the due date
+ **************************************************************************/
+struct CheckOutInfo
+{
+	string name = "";
+	string dueDate = "";
+
+	CheckOutInfo(string n, string due)
+	{
+		name = n;
+		dueDate = due;
+	}
+};
+
+/***************************************************************************
+ * STRUCT Compartment
+ * -------------------------------------------------------------------------
+ * Represents a compartment in a library. Holds a pointer to an Item
+ * and holds a pointer to it's check out information.
+ **************************************************************************/
+struct Compartment
+{
+	//Set both pointer to null - empty item and non-checkedOut
+	Item* item = nullptr;
+	CheckOutInfo* checkoutInfo = nullptr;
+};
+
+//CONSTANT VARIABLE - max amount of compartments per shelf 
+const int MAX_COMPARTMENTS = 15;
 
 /***************************************************************************
  * CLASS Shelf
@@ -22,57 +54,49 @@ using namespace std;
  **************************************************************************/
 class Shelf
 {
-private:
-	/***********************************************************************
-	 * PRIVATE DATA MEMBER compartments
-	 * ---------------------------------------------------------------------
-	 * Array of 15 compartments in this shelf.
-	 **********************************************************************/
-	static const int MAX_COMPARTMENTS = 15;
-	Compartment compartments[MAX_COMPARTMENTS];
+	public:
+		/***********************************************************************
+		 * CONSTRUCTOR
+		 * ---------------------------------------------------------------------
+		 * Initializes an empty shelf with 15 empty compartments.
+		 **********************************************************************/
+		Shelf();
 
-public:
-	/***********************************************************************
-	 * CONSTRUCTOR
-	 * ---------------------------------------------------------------------
-	 * Initializes an empty shelf with 15 empty compartments.
-	 **********************************************************************/
-	Shelf();
+		/***********************************************************************
+		 * DESTRUCTOR
+		 * ---------------------------------------------------------------------
+		 * Deallocates memory for pointers to Item and checkOutInfo
+		 **********************************************************************/
+		~Shelf();
 
-	/***********************************************************************
-	 * DESTRUCTOR
-	 * ---------------------------------------------------------------------
-	 * Compartments clean themselves up.
-	 **********************************************************************/
-	~Shelf() = default;
+		/***********************************************************************
+		 * PUBLIC MEMBER FUNCTION []
+		 * ---------------------------------------------------------------------
+		 * Overloads the [] operator to access items in that compartment
+		 * Throws exception if index is out of bounds.
+		 * ---------------------------------------------------------------------
+		 * => Returns a pointer reference to the Item located at that index
+		 **********************************************************************/
+		Item*& operator[](int index);
 
-	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION []
-	 * ---------------------------------------------------------------------
-	 * Overloads the [] operator to access compartments by index.
-	 * Throws exception if index is out of bounds.
-	 * ---------------------------------------------------------------------
-	 * => Returns reference to Compartment at index
-	 **********************************************************************/
-	Compartment& operator[](int index);
+		/***********************************************************************
+		 * PUBLIC MEMBER FUNCTION getCheckOutInfo
+		 * ---------------------------------------------------------------------
+		 * Accesses the checkOutInfo of that compartment at that index
+		 * Throws exception if index is out of bounds.
+		 * ---------------------------------------------------------------------
+		 * => Returns pointer reference to the compartment's check out info
+		 **********************************************************************/
+		CheckOutInfo*& getCheckOutInfo(int index);
 
-	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION getCompartment (const version)
-	 * ---------------------------------------------------------------------
-	 * Returns const reference to compartment at index.
-	 * ---------------------------------------------------------------------
-	 * => Returns const reference to Compartment at index
-	 **********************************************************************/
-	const Compartment& operator[](int index) const;
-
-	/***********************************************************************
-	 * PUBLIC MEMBER FUNCTION getMaxCompartments
-	 * ---------------------------------------------------------------------
-	 * Returns the maximum number of compartments per shelf.
-	 * ---------------------------------------------------------------------
-	 * => Returns MAX_COMPARTMENTS constant
-	 **********************************************************************/
-	static int getMaxCompartments();
+	private:
+		/***********************************************************************
+		 * PRIVATE DATA MEMBER compartments
+		 * ---------------------------------------------------------------------
+		 * Array of 15 compartments in this shelf.
+		 **********************************************************************/
+		Compartment compartments[MAX_COMPARTMENTS];
 };
 
-#endif
+
+#endif /* SHELF_H_ */

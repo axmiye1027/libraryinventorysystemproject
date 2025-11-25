@@ -1,18 +1,28 @@
+#ifndef BOOK_H_
+#define BOOK_H_
 
 #include "Item.h"
 
-#ifndef BOOK_H
-#define BOOK_H
-
 class Book : public Item
 {
-private:
-	string title;
-	string author;
-	string copyrightDate;
-public:
-	Book(const string& description, int id, const string& title, const string& author, const string& copyrightDate);
+	public:
+		Book();
+		Book(const string& description, int id,
+			 const string& title, const string& author, const string& copyrightDate);
+		void setTitle(string title);
+		void setAuthor(string author);
+		void setCopyrightDate(string copyrightDate);
+		string getTitle() const;
+		string getAuthor() const;
+		string getCopyrightDate() const;
+		void print(ostream& out) const;
 
-	void print(ostream& os) const override;
+	private:
+		string title;
+		string author;
+		string copyrightDate;
 };
-#endif
+
+
+
+#endif /* BOOK_H_ */

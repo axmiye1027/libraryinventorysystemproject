@@ -1,16 +1,25 @@
-#include "Item.h"
+#ifndef MAGAZINE_H_
+#define MAGAZINE_H_
 
-#ifndef MAGAZINE_H
-#define MAGAZINE_H
+#include "Item.h"
 
 class Magazine : public Item
 {
-private:
-	string edition;
-	string mainArticle;
-public:
-	Magazine(const string& name, const string& description, int id, const string& edition, const string& mainArticle);
+	public:
+		Magazine();
+		Magazine(const string& name, const string& description, int id,
+				 const string& editition, const string& mainTitle);
+		void setEdition(const string& edition);
+		void setMainTitle(const string& mainTitle);
+		string getEdition() const;
+		string getMainTitle() const;
+		void print(ostream& out) const;
 
-	void print(ostream& os) const override;
+	private:
+		string edition;
+		string mainTitle;
 };
-#endif
+
+
+
+#endif /* MAGAZINE_H_ */
