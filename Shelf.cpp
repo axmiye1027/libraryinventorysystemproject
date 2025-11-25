@@ -1,29 +1,43 @@
 #include "Shelf.h"
+#include <stdexcept>
 
 Shelf::Shelf()
 {
-	// Compartments are default-constructed as empty
-}
-
-Compartment& Shelf::operator[](int index)
-{
-	if (index < 0 || index >= MAX_COMPARTMENTS)
+	for(int i = 0; i < MAX_COMPARTMENTS; i++)
 	{
-		throw out_of_range("Invalid compartment index");
+		compartments[i].item = nullptr;
+		compartments[i].checkoutInfo = nullptr;
 	}
-	return compartments[index];
 }
 
-const Compartment& Shelf::operator[](int index) const
+Shelf::~Shelf()
 {
-	if (index < 0 || index >= MAX_COMPARTMENTS)
+	for(int i = 0; i < MAX_COMPARTMENTS; i++)
 	{
-		throw out_of_range("Invalid compartment index");
+		delete compartments[i].item;
+		compartments[i].item = nullptr;
+
+		delete compartments[i].checkoutInfo;
+		compartments[i].checkoutInfo = nullptr;
 	}
-	return compartments[index];
 }
 
-int Shelf::getMaxCompartments()
+Item*& Shelf::operator[](int index)
 {
-	return MAX_COMPARTMENTS;
+	if(index < 0 || index >= MAX_COMPARTMENTS)
+	{
+		throw out_of_range("Invalid compartment index\n");
+	}
+
+	return compartments[index].item;
+}
+
+CheckOutInfo*& Shelf::getCheckOutInfo(int index)
+{
+	if(index < 0 || index >= MAX_COMPARTMENTS)
+	{
+		throw out_of_range("Invalid compartment index\n");
+	}
+
+	return compartments[index].checkoutInfo;
 }

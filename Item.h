@@ -1,42 +1,30 @@
+#ifndef ITEM_H_
+#define ITEM_H_
 
 #include <string>
-#include <iostream>
-#include <vector>
 using namespace std;
-
-#ifndef ITEM_H
-#define ITEM_H
 
 class Item
 {
-protected:
-	string name;
-	string description;
-	int id;
-	bool checkedOut;
-	string nameOfUser;
-	string dueDate;
-public:
+	public:
+		Item();
+		Item(const string& name, const string& description, int id);
+		virtual ~Item() = default;
+		void setName(const string& name);
+		void setDescription(const string& description);
+		void setID(int id);
+		string getName() const;
+		string getDescription() const;
+		int getID() const;
+		virtual void print(ostream& out) const;
+		friend ostream& operator<<(ostream& out, const Item* item);
 
-	Item(const string& name, const string& description, int id);
-
-	virtual ~Item() = default;
-
-	int getID() const;
-	string getName() const;
-	string getDescription() const;
-
-	bool isCheckedOut() const;
-	string getBorrowerName() const;
-	string getDueDate() const;
-
-	bool checkout(const string& person, const string& due);
-	bool checkin();
-
-	virtual void print(ostream& os) const = 0;
-
-	friend ostream& operator<< (ostream & os, const Item& item);
+	private:
+		string name;
+		string description;
+		int id;
 };
 
 
-#endif
+
+#endif /* ITEM_H_ */

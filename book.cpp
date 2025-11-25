@@ -1,24 +1,55 @@
 #include "Book.h"
+#include <iostream>
 
-Book::Book(const string& description, int id, const string& title, const string& author, const string& copyrightDate)
-	:Item(title, description, id), title(title), author(author), copyrightDate(copyrightDate) {
-}
-
-void Book::print(ostream& os) const
+Book::Book()
 {
-    os << "=== Book ===\n"
-        << "Title: " << title << "\n"
-        << "Author: " << author << "\n"
-        << "Copyright: " << copyrightDate << "\n"
-        << "ID: " << id << "\n"
-        << "Description: " << description << "\n";
-
-    if (checkedOut) {
-        os << "CHECKED OUT\n"
-            << "Borrower: " << nameOfUser << "\n"
-            << "Due Date: " << dueDate << "\n";
-    }
-    else {
-        os << "In Storage\n";
-    }
+	title = "";
+	author = "";
+	copyrightDate = "";
 }
+
+Book::Book(const string& description, int id,
+		   const string& title, const string& author, const string& copyrightDate):
+			Item(title, description, id), title(title), author(author),
+			copyrightDate(copyrightDate){}
+
+void Book::setTitle(string title)
+{
+	this->title = title;
+}
+
+void Book::setAuthor(string author)
+{
+	this->author = author;
+}
+
+void Book::setCopyrightDate(string copyrightDate)
+{
+	this->copyrightDate = copyrightDate;
+}
+
+string Book::getTitle() const
+{
+	return title;
+}
+
+string Book::getAuthor() const
+{
+	return author;
+}
+
+string Book::getCopyrightDate() const
+{
+	return copyrightDate;
+}
+
+void Book::print(ostream& out) const
+{
+	out << endl;
+	out << "Title: " 		  << title 		 	   << std::endl;
+	out << "Description: " 	  << getDescription()  << std::endl;
+	out << "ID: " 		 	  << getID()		   << std::endl;
+	out << "Author: " 	 	  << author 		   << std::endl;
+	out << "Copyright Date: " << copyrightDate 	   << std::endl;
+}
+

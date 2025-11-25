@@ -1,21 +1,30 @@
-#include "Item.h"
+#ifndef MOVIE_H_
+#define MOVIE_H_
 
-#ifndef MOVIE_H
-#define MOVIE_H
+#include "Item.h"
+#include <vector>
 
 class Movie : public Item
 {
-private:
-	string title;
-	string director;
-	vector<string> actors;
+	public:
+		Movie();
+		Movie(const string& description, int id,
+			  const string& title, const string& director, const vector<string>& actorList);
+		void setTitle(const string& title);
+		void setDirector(const string& director);
+		void setActorList(const vector<string>& actorList);
+		string getTitle() const;
+		string getDirector() const;
+		vector<string> getActorList() const;
+		void print(ostream& out) const;
 
-public:
-	Movie(const string& description, int id, const string& title,
-		  const string& director, const vector<string>& actors);
-
-	void addActor(const string& actor);
-
-	void print(ostream& os) const override;
+	private:
+		string title;
+		string director;
+		vector<string> actorList;
 };
-#endif
+
+
+
+
+#endif /* MOVIE_H_ */

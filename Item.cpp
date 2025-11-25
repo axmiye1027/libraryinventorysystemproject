@@ -1,19 +1,31 @@
 #include "Item.h"
+#include <iostream>
 
-Item::Item(const string& name, const string& description, int id)
+Item::Item()
+{
+	name = "";
+	description = "";
+	id = 0;
+}
+
+Item::Item(const string& name, const string& description, int id):
+		name(name), description(description), id(id){}
+
+void Item::setName(const string& name)
 {
 	this->name = name;
-	this->description = description;
-	this->id = id;
-	checkedOut = false;
-	nameOfUser = "";
-	dueDate = "";
 }
 
-int Item::getID() const
+void Item::setDescription(const string& description)
 {
-	return id;
+	this->description = description;
 }
+
+void Item::setID(int id)
+{
+	this->id = id;
+}
+
 string Item::getName() const
 {
 	return name;
@@ -24,47 +36,21 @@ string Item::getDescription() const
 	return description;
 }
 
-bool Item::isCheckedOut() const
+int Item::getID() const
 {
-	return checkedOut;
-}
-string Item::getBorrowerName() const
-{
-	return nameOfUser;
-}
-string Item::getDueDate() const
-{
-	return dueDate;
+	return id;
 }
 
-bool Item::checkout(const string& person, const string& due)
+void Item::print(ostream& out) const
 {
-	if (checkedOut)
-	{
-		cout << "Error: " << name << " is already checked out.\n";
-		return false;
-	}
-	checkedOut = true;
-	nameOfUser = person;
-	dueDate = due;
-	return true;
-}
-bool Item::checkin()
-{
-	if (!checkedOut) {
-		cout << "Error: " << name << " is not currently checked out.\n";
-		return false;
-	}
-	checkedOut = false;
-	nameOfUser.clear();
-	dueDate.clear();
-	return true;
+	out << endl;
+	out << "Name: " << name << endl;
+	out<< "Description: " << description << endl;
+	out << "ID: " << id << endl;
 }
 
-ostream& operator << (ostream& os, const Item& item)
+ostream& operator<<(ostream& out, const Item* item)
 {
-	item.print(os);
-	return os;
+	item->print(out);
+	return out;
 }
-
-
