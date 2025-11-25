@@ -53,11 +53,13 @@ bool Library::checkOutItem(CheckOutInfo* info, int shelf, int compartment)
 		throw invalid_argument("Checkout information must be provided\n");
 	}
 
+	//Validates non empty string for borrow's name and due date
 	if(info->name.empty() || info->dueDate.empty())
 	{
 		throw invalid_argument("Name nor due date cannot be empty\n");
 	}
 
+	//Validates that item is not empty and that checkOutInfo is empty
 	if(shelves[shelf][compartment] != nullptr &&
 		shelves[shelf].getCheckOutInfo(compartment) == nullptr)
 	{
@@ -72,6 +74,8 @@ bool Library::checkInItem(int id, int shelf, int compartment)
 {
 	validateCompartment(shelf, compartment);
 
+	//Validates id matches item checked out at that compartment's location
+	//Also validates that the compartment is not pointing to an empty checkout
 	if(shelves[shelf][compartment]->getID() == id &&
 	   shelves[shelf].getCheckOutInfo(compartment) != nullptr)
 	{
@@ -88,6 +92,7 @@ void Library::printItemsInStorage(ostream& out)
 	{
 		for(int j = 0; j < MAX_COMPARTMENTS; j++)
 		{
+			//Prints the compartments with empty checkout informations
 			if(shelves[i][j] != nullptr && shelves[i].getCheckOutInfo(j) == nullptr)
 			{
 				out << "Shelf: " << i << "  Compartment: " << j;
@@ -104,6 +109,7 @@ void Library::printCheckOutItems(ostream& out)
 	{
 		for(int j = 0; j < MAX_COMPARTMENTS; j++)
 		{
+			//Prints the compartments with full checkout informations
 			if(shelves[i][j] != nullptr && shelves[i].getCheckOutInfo(j) != nullptr)
 			{
 				out << "Checked out by: " << shelves[i].getCheckOutInfo(j)->name;
@@ -121,6 +127,7 @@ bool Library::swapItems(int shelf1, int comp1, int shelf2, int comp2)
 	validateCompartment(shelf1, comp1);
 	validateCompartment(shelf2, comp2);
 
+	//Validates that items at those compartments are not empty and not checked out
 	if(shelves[shelf1][comp1] != nullptr && shelves[shelf2][comp2] != nullptr &&
 		shelves[shelf1].getCheckOutInfo(comp1) == nullptr && shelves[shelf2].getCheckOutInfo(comp2) == nullptr)
 	{
