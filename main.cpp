@@ -1,10 +1,12 @@
-#include<iostream>
-#include<vector>
-#include<fstream>
+#include <iostream>
+#include <vector>
+#include <fstream>
 #include "Library.h"
 #include "Book.h"
 #include "Movie.h"
 #include "Magazine.h"
+#include "Shelf.h"
+#include "Compartment.h"
 
 using namespace std;
 
@@ -39,78 +41,79 @@ int main()
 	    Magazine* mag2 = new Magazine("The New York Times", "All the news that's fit to print", 3002,
 	                                 "February 2024", "Global Economy");
 
-	    //Adding items to library
+	    // SYSTEM OPERATION 1: Add an Item
+	    cout << "1. ADDING ITEMS TO LIBRARY\n";
+	    cout << "===========================\n";
 	    library.addItem(book1, 0, 0);
+	    cout << "Added: \"" << book1->getName() << "\" to Shelf " << 0 << ", Compartment " << 0 << endl;
 	    library.addItem(book2, 0, 1);
+	    cout << "Added: \"" << book2->getName() << "\" to Shelf " << 0 << ", Compartment " << 1 << endl;
 	    library.addItem(movie1, 1, 0);
+	    cout << "Added: \"" << movie1->getName() << "\" to Shelf " << 1 << ", Compartment " << 0 << endl;
 	    library.addItem(movie2, 1, 1);
+	    cout << "Added: \"" << movie2->getName() << "\" to Shelf " << 1 << ", Compartment " << 1 << endl;
 	    library.addItem(mag1, 2, 0);
+	    cout << "Added: \"" << mag1->getName() << "\" to Shelf " << 2 << ", Compartment " << 0 << endl;
 	    library.addItem(mag2, 2, 1);
-
-	    cout << "Print items in library storage:\n";
-	    cout << "--------------------------------\n";
-	    library.printInventory();
+	    cout << "Added: \"" << mag2->getName() << "\" to Shelf " << 2 << ", Compartment " << 1 << endl;
 	    cout << endl;
 
-	    //Display Item info using overloaded[] operator
-	    cout << "Testing overloaded[] operator - expected item title: \"Great Expectations\"\n";
-	    cout << "-------------------------------------------------------------------------\n";
-	    cout << *library[0][0];
-	    cout << endl;
-
-	    //Check out items (all books)
+	    // SYSTEM OPERATION 2: Checkout an Item
+	    cout << "2. CHECKING OUT ITEMS\n";
+	    cout << "======================\n";
 	    ofstream checkoutFile("checkout.txt");
-
-	    library.checkoutItem(checkoutFile, *book1, "Alice Johnson");
-	    library.checkoutItem(checkoutFile, *book2, "Bob Williams");
-
+	    library.checkoutItem(checkoutFile, 0, 0, "Alice Johnson");
+	    Item* checkedOut1 = library[0][0].getItem();
+	    if(checkedOut1 != nullptr)
+	    {
+	    	cout << "\"" << checkedOut1->getName() << "\" checked out by: Alice Johnson" << endl;
+	    }
+	    library.checkoutItem(checkoutFile, 0, 1, "Bob Williams");
+	    Item* checkedOut2 = library[0][1].getItem();
+	    if(checkedOut2 != nullptr)
+	    {
+	    	cout << "\"" << checkedOut2->getName() << "\" checked out by: Bob Williams" << endl;
+	    }
 	    checkoutFile.close();
 	    cout << endl;
 
-	    //Print inventory after checkout (should be just magazines and movies)
-	    cout << "Printing all items in library storage:\n";
-	    cout << "-------------------------------------\n";
+	    // SYSTEM OPERATION 3: Checkin an Item
+	    cout << "3. CHECKING IN ITEMS\n";
+	    cout << "=====================\n";
+	    // Get borrower name before checkin
+	    string borrowerName = library[0][0].getBorrowerName();
+	    Item* returnedItem = library[0][0].getItem();
+	    library.checkinItem(0, 0);
+	    if(returnedItem != nullptr)
+	    {
+	    	cout << borrowerName << " returned: \"" << returnedItem->getName() << "\"" << endl;
+	    	cout << "Item placed back in Shelf " << 0 << ", Compartment " << 0 << endl;
+	    }
+	    cout << endl;
+
+	    // SYSTEM OPERATION 4: Print Items in Storage
+	    cout << "4. PRINTING ITEMS IN STORAGE\n";
+	    cout << "=============================\n";
 	    library.printInventory();
 	    cout << endl;
 
-	    //Read check out file and print checked-out items
-	    cout << "Printing checked-out items from file\n";
-	    cout << "------------------------------------\n";
-	    ifstream checkoutReadFile("checkout.txt");
-
-	    library.printCheckOutedItems(checkoutReadFile);
-	    cout << endl << endl;
-	    checkoutReadFile.close();
-
-	    //Checking in items
-	    library.checkinItem(*book1);
-	    cout << "Printing all items in storage - \"Great Expectations\" should be first\n";
-	    cout << "----------------------------------------------------------------------\n";
-	    library.printInventory();
+	    // SYSTEM OPERATION 5: Print Checked-Out Items
+	    cout << "5. PRINTING CHECKED-OUT ITEMS\n";
+	    cout << "==============================\n";
+	    library.printCheckedOutItems();
 	    cout << endl;
 
-	    //Swapping Items
-	    cout << "**TESTING SWAPPING ITEMS**\n";
-	    cout << "-----------------------\n\n";
-
-	    cout << "Item at library[2][0] before swap:\n";
-	    cout << "----------------------------------\n";
-	    cout << *library[2][0];
-	    cout << endl;
-	    cout << "Item at library[2][1] before swap:\n";
-	    cout << "----------------------------------\n";
-	    cout << *library[2][1];
-	    cout << endl;
-
+	    // SYSTEM OPERATION 6: Swap Items
+	    cout << "6. SWAPPING ITEMS\n";
+	    cout << "==================\n";
+	    // Get item names before swap
+	    Item* swapItem1 = library[2][0].getItem();
+	    Item* swapItem2 = library[2][1].getItem();
+	    string item1Name = (swapItem1 != nullptr) ? swapItem1->getName() : "Unknown";
+	    string item2Name = (swapItem2 != nullptr) ? swapItem2->getName() : "Unknown";
 	    library.swapItems(2, 0, 2, 1);
-
-	    cout << "Item at library[2][0] after swap:\n";
-	    cout << "----------------------------------\n";
-	    cout << *library[2][0];
-	    cout << endl;
-	    cout << "Item at library[2][1] after swap:\n";
-	    cout << "----------------------------------\n";
-	    cout << *library[2][1];
+	    cout << "Swapped: \"" << item1Name << "\" (Shelf " << 2 << ", Compartment " << 0 << ") ";
+	    cout << "with \"" << item2Name << "\" (Shelf " << 2 << ", Compartment " << 1 << ")" << endl;
 	    cout << endl;
 
 	    cout << "**TESTING ERROR HANDLING**\n";
@@ -155,8 +158,8 @@ int main()
 	    try
 	    {
 	    	checkoutFile.open("checkout.txt", ios::app);
-	    	library.checkoutItem(checkoutFile, *mag1, "David Lee");
-	    	library.checkoutItem(checkoutFile, *mag1, "Kevind Dee");
+	    	library.checkoutItem(checkoutFile, 2, 0, "David Lee");
+	    	library.checkoutItem(checkoutFile, 2, 0, "Kevind Dee");
 	    }
 	    catch(const exception& e)
 	    {
@@ -169,7 +172,7 @@ int main()
 	    try
 	    {
 	    	checkoutFile.open("checkout.txt", ios::app);
-	    	library.checkoutItem(checkoutFile, *movie1, "");
+	    	library.checkoutItem(checkoutFile, 1, 0, "");
 	    }
 	    catch(const exception& e)
 	    {
@@ -181,7 +184,7 @@ int main()
 	    //Error Handling - checking in item that was not checked out
 	    try
 	    {
-	    	library.checkinItem(*movie2);
+	    	library.checkinItem(1, 1);
 	    }
 	    catch(const exception& e)
 	    {
